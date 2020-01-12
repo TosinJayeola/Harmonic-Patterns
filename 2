@@ -2,7 +2,7 @@
 // This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
 // © fikira
 // This source code is subject to the terms of the Creative Commons Zero v1.0 Universal license
-// https://github.com/fikira12/Fibonacci-Retracement-Pivots.git
+// https://github.com/fikira12/Harmonic-Patterns
 // Copyright (c) 2019 @fikira
 
 study("[fikira] Harmonic Patterns 2", shorttitle="HaPat 2", overlay=true)
@@ -100,9 +100,11 @@ show_D = input(true, title="Show Drawings")
 crab = input(true, title="Show 🦀'CRAB'")
 bat = input(true, title="Show 🦇'BAT'")
 batA = input(true, title="Show 🦇'BAT' ALT")
+batmax = input(true, title="Show 🦇'BAT' MAX")
 //gartley = input(true, title="Show 'Gartley'")
 butterfly = input(true, title="Show 🦋'Butterfly'")
 shark = input(true, title="Show 🦈'Shark'")
+nenstar = input(true, title="Show ⭐️'Nen Star'")
 
 // Show 'Entry'
 _E = input(false, title="-<><><><><><><><[Entry Point]><><><><><><><>-")
@@ -119,7 +121,7 @@ _tp = input(false, title="-<><><><><><><><[Take Profit]><><><><><><><>-")
 show_TP = input(true, title="Show TP Lines")
 
 //TP1 = input(title="TP level 'ABCD'", defval="0.382", options=["0.236", "0.382", "0.5", "0.618", "0.786", "1", "1.272", "1.618"])  // numbers = minutes, D = Day, W = Week, M = Month
-TP2 = input(title="TP level 🦀🦇🦋", defval="0.618", options=["0.236", "0.382", "0.5", "0.618", "0.786", "1", "1.272", "1.618"])  // numbers = minutes, D = Day, W = Week, M = Month
+TP2 = input(title="TP level 🦀🦇🦋⭐️", defval="0.618", options=["0.236", "0.382", "0.5", "0.618", "0.786", "1", "1.272", "1.618"])  // numbers = minutes, D = Day, W = Week, M = Month
 TP3 = input(title="TP level 🦀🦇🦋", defval="1.272", options=["0.236", "0.382", "0.5", "0.618", "0.786", "1", "1.272", "1.618"])  // numbers = minutes, D = Day, W = Week, M = Month
 
 //_0_382 = 0.382
@@ -216,14 +218,28 @@ else
             if SIZE == "huge"
                 _SIZE := size.huge
 
-  
+LINE = input(title="Line Type [Connections]", defval="dotted", options=["solid", "dashed", "dotted"]) 
+
+_LINE = size.small
+if LINE == "solid"
+    _LINE := line.style_solid
+else
+    if LINE == "dashed"
+        _LINE := line.style_dashed
+    else
+        if LINE == "dotted"
+            _LINE := line.style_dotted
+
+
 //tp_0_382 = d + ((a - d) * _0_382) // tp_1 = tp_0_382
+tp_0_382a = d + ((c - d) * 0.382) 
 tp_0_618 = d + ((a - d) * _0_618) // tp_2 = tp_0_618
 tp_0_618a = d + ((c - d) * _0_618)  // tp_1a = tp_0_618a
 tp_0_886 = d + ((c - d) * 0.886) 
 tp_1_272 = d + ((c - d) * _1_272)  // tp_2a = tp_1_272
 
 //tp0_382 = d - ((d - a) * _0_382) // tp1 = tp0_382
+tp0_382a = d - ((d - c) * 0.382)
 tp0_618 = d - ((d - a) * _0_618) // tp2 = tp0_618
 tp0_618a = d - ((d - c) * _0_618) // tp1a = tp0_618a
 tp0_886 = d - ((d - c) * 0.886) 
@@ -238,6 +254,29 @@ tp0_5 = d - ((d - c) * 0.5) // tp1s = tp0_5
 e_0_886 = a - ((a - x) * 0.886) // e_1s = e_0_886
 e0_886 = a + ((x - a) * 0.886) // e1s = e0_886
 
+// from http://chartreaderpro.com/harmonic-pattern-ratios/ 
+// X-A -> B: minXB & maxXB
+// A-B -> C: minAC & maxAC
+// B-C -> D: minBD & maxBD
+// X -> D: minXD(-1%) & maxXD(+1%)
+// ? Bullish
+// ?_b_bl = bl and b <= (a - (((a - x) * minXB) * marge1)) and b >= (a - (((a - x) * maxXB) * marge2)) 
+// ?_c_bl = ch and c <= (b + (((a - b) * maxAC) * marge2)) and c >= (b + (((a - b) * minAC) * marge1)) 
+// ?_d_bl = dl and d <= (c - (((c - b) * minBD) * marge1)) and d >= (c - (((c - b) * maxBD) * marge2))
+// ?_D_bl = dl and d <= (a - (((a - x) * (minXD * 0.99)) * marge1)) and d >= (a - (((a - x) * (maxXD * 1.01)) * marge2)) 
+// OR ?:
+// ?_D_bl = dl and d <= (c - (((c - x) * (minXD * 0.99)) * marge1)) and d >= (c - (((c - x) * (maxXD * 1.01)) * marge2)) 
+
+// ?_bl = ?_b_bl and ?_c_bl and ?_d_bl and ?_D_bl
+// ? Bearish
+// ?_b_br = bh and b >= (a + (((x - a) * minXB) * marge1)) and b <= (a + (((x - a) * maxXB) * marge2)) 
+// ?_c_br = cl and c >= (b - (((b - a) * maxAC) * marge2)) and c <= (b - (((b - a) * minAC) * marge1)) 
+// ?_d_br = dh and d >= (c + (((b - c) * minBD) * marge1)) and d <= (c + (((b - c) * maxBD) * marge2))
+// ?_D_br = dh and d >= (a + (((x - a) * (minXD * 0.99)) * marge1)) and d <= (a + (((x - a) * (maxXD * 1.01)) * marge2)) 
+// OR:
+// ?_D_br = dh and d >= (c + (((x - c) * (minXD * 0.99)) * marge1)) and d <= (c + (((x - c) * (maxXD * 1.01)) * marge2)) 
+
+// ?_br = ?_b_br and ?_c_br and ?_d_br and ?_D_br
 
 // 'ABCD'
 
@@ -327,7 +366,7 @@ TP_2cr = dl and cr_bl or cr_bl_strong ? valuewhen(tp_1_272, tp_1_272, 0) : dh an
 
 bt_b_bl = bl and b <= (a - (((a - x) * 0.382) * marge1)) and b >= (a - (((a - x) * 0.5) * marge2)) 
 bt_c_bl = ch and c <= (b + (((a - b) * 0.886) * marge2)) and c >= (b + (((a - b) * 0.382) * marge1)) 
-bt_d_bl = dl and d <= (a - (((a - b) * 1.618) * marge2)) and d >= (a - (((a - b) * 2.618) * marge2))
+bt_d_bl = dl and d <= (a - (((a - b) * 1.618) * marge1)) and d >= (a - (((a - b) * 2.618) * marge2))
 
 //- Point B is at the 38.2-50% retracement of XA.
 //- Point C can be at the 38.2%-88.6% retracement of AB.
@@ -341,7 +380,7 @@ plotchar(bat and show_anim ? plot_bt_bl : na, char="🦇", location=location.bot
 
 bt_b_br = bh and b >= (a + (((x - a) * 0.382) * marge1)) and b <= (a + (((x - a) * 0.5) * marge2)) 
 bt_c_br = cl and c >= (b - (((b - a) * 0.886) * marge2)) and c <= (b - (((b - a) * 0.382) * marge1)) 
-bt_d_br = dh and d >= (a + (((b - a) * 1.618) * marge2)) and d <= (a + (((b - a) * 2.618) * marge2))
+bt_d_br = dh and d >= (a + (((b - a) * 1.618) * marge1)) and d <= (a + (((b - a) * 2.618) * marge2))
 
 //- Point B is at the 38.2-50% retracement of XA.
 //- Point C can be at the 38.2%-88.6% retracement of AB.
@@ -369,7 +408,7 @@ TP_3bt = dl and bt_bl ? d + (a - x) : dh and bt_br ? d - (x - a) : na
 bt_b_blA = bl and b >= (a - (((a - x) * 0.39) * marge2))
 bt_c_blA = ch and c <= (b + (((a - b) * 0.886) * marge2)) and c >= (b + (((a - b) * 0.382) * marge1))
 bt_d1_blA = bl and d <= (a - (((a - x) * 1.11) * marge1)) and d >= (a - (((a - x) * 1.15) * marge2)) 
-bt_d2_blA = dl and d <= (c - (((c - b) * 2.0) * marge2)) and d >= (c - (((c - b) * 3.618) * marge2))
+bt_d2_blA = dl and d <= (c - (((c - b) * 2.0) * marge1)) and d >= (c - (((c - b) * 3.618) * marge2))
 
 bt_blA = bt_b_blA and bt_c_blA and bt_d1_blA and bt_d2_blA
 plot_bt_blA = bt_blA and not bt_blA[1] ? bt_blA : na
@@ -380,7 +419,7 @@ plotchar(batA and show_anim ? plot_bt_blA : na, char="🦇", text="ALT", textcol
 bt_b_brA = bh and b <= (a + (((x - a) * 0.39) * marge2)) 
 bt_c_brA = cl and c >= (b - (((b - a) * 0.886) * marge2)) and c <= (b - (((b - a) * 0.382) * marge1)) 
 bt_d1_brA = bh and d >= (a + (((x - a) * 1.11) * marge1)) and d <= (a + (((x - a) * 1.15) * marge2)) 
-bt_d2_brA = dh and d >= (c + (((b - c) * 2.0) * marge2)) and d <= (c + (((b - c) * 3.618) * marge2))
+bt_d2_brA = dh and d >= (c + (((b - c) * 2.0) * marge1)) and d <= (c + (((b - c) * 3.618) * marge2))
 
 bt_brA = bt_b_brA and bt_c_brA and bt_d1_brA and bt_d2_brA
 plot_bt_brA = bt_brA and not bt_brA[1] ? bt_brA : na
@@ -398,6 +437,33 @@ TP_2btA = dl and bt_blA ? valuewhen(tp_0_886, tp_0_886, 0) : dh and bt_brA ? val
 TP_3btA = dl and bt_blA ? b : dh and bt_brA ? b : na
 TP_4btA = dl and bt_blA ? c : dh and bt_brA ? c : na
 
+// Max Bat Bullish
+mb_b_bl = bl and b <= (a - (((a - x) * 0.382) * marge1)) and b >= (a - (((a - x) * 0.618) * marge2)) 
+mb_c_bl = ch and c <= (b + (((a - b) * 0.886) * marge2)) and c >= (b + (((a - b) * 0.382) * marge1)) 
+mb_d_bl = dl and d <= (c - (((c - b) * 1.272) * marge1)) and d >= (c - (((c - b) * 2.618) * marge2))
+mb_D_bl = dl and d <= (a - (((a - x) * (0.886 * 0.99)) * marge1)) and d >= (a - (((a - x) * (0.886 * 1.01)) * marge2))  
+
+mb_bl = mb_b_bl and mb_c_bl and mb_d_bl and mb_D_bl
+plot_mb_bl = mb_bl and not mb_bl[1] ? mb_bl : na
+plotchar(batmax and show_anim ? plot_mb_bl : na, char="🦇", text="BAT MAX", textcolor=color.lime, location=location.bottom, transp=0, size=size.small, title="Bat MAX Bullish")
+
+// Max Bat Bearish
+mb_b_br = bh and b >= (a + (((x - a) * 0.382) * marge1)) and b <= (a + (((x - a) * 0.618) * marge2)) 
+mb_c_br = cl and c >= (b - (((b - a) * 0.886) * marge2)) and c <= (b - (((b - a) * 0.382) * marge1)) 
+mb_d_br = dh and d >= (c + (((b - c) * 1.272) * marge1)) and d <= (c + (((b - c) * 2.618) * marge2))
+mb_D_br = dh and d >= (a + (((x - a) * (0.886 * 0.99)) * marge1)) and d <= (a + (((x - a) * (0.886 * 1.01)) * marge2)) 
+
+mb_br = mb_b_br and mb_c_br and mb_d_br and mb_D_br
+plot_mb_br = mb_br and not mb_br[1] ? mb_br : na
+plotchar(batmax and show_anim ? plot_mb_br : na, char="🦇", text="BAT MAX", textcolor=color.red, location=location.top, transp=0, size=size.small, title="Bat MAX Bearish")
+
+// Take Profit lines MAX Bat
+
+ENTRYmb = dl and mb_bl ? d : dh and mb_br ? d : na
+TP_1mb = dl and mb_bl ? valuewhen(tp_0_618a, tp_0_618a, 0) : dh and mb_br ? valuewhen(tp0_618a, tp0_618a, 0) : na
+TP_2mb = dl and mb_bl ? valuewhen(tp_0_886, tp_0_886, 0) : dh and mb_br ? valuewhen(tp0_886, tp0_886, 0) : na
+TP_3mb = dl and mb_bl ? b : dh and mb_br ? b : na
+TP_4mb = dl and mb_bl ? c : dh and mb_br ? c : na
 
 // GARTLEY
 
@@ -405,7 +471,7 @@ TP_4btA = dl and bt_blA ? c : dh and bt_brA ? c : na
 
 //g_b_bl = bl and b <= (a - (((a - x) * 0.624) * marge1)) and b >= (a - (((a - x) * 0.612) * marge2)) 
 //g_c_bl = ch and c <= (b + (((a - b) * 0.886) * marge2)) and c >= (b + (((a - b) * 0.382) * marge1)) 
-//g_d_bl = dl and d <= (a - (((a - b) * 1.27) * marge2)) and d >= (a - (((a - b) * 1.618) * marge2))
+//g_d_bl = dl and d <= (a - (((a - b) * 1.27) * marge1)) and d >= (a - (((a - b) * 1.618) * marge2))
 
 //Point B is at the 61.8% retracement of XA. This is the most important condition.
 //Point C can be at the 38.2%-88.6% retracement of AB.
@@ -418,7 +484,7 @@ TP_4btA = dl and bt_blA ? c : dh and bt_brA ? c : na
 
 //g_b_br = bh and b >= (a + (((x - a) * 0.624) * marge1)) and b <= (a + (((x - a) * 0.612) * marge2)) 
 //g_c_br = cl and c >= (b - (((b - a) * 0.886) * marge2)) and c <= (b - (((b - a) * 0.382) * marge1)) 
-//g_d_br = dh and d >= (a + (((b - a) * 1.27) * marge2)) and d <= (a + (((b - a) * 1.618) * marge2))
+//g_d_br = dh and d >= (a + (((b - a) * 1.27) * marge1)) and d <= (a + (((b - a) * 1.618) * marge2))
 
 //Point B is at the 61.8% retracement of XA. This is the most important condition.
 //Point C can be at the 38.2%-88.6% retracement of AB.
@@ -445,7 +511,7 @@ TP_4btA = dl and bt_blA ? c : dh and bt_brA ? c : na
 
 b_b_bl = bl and b <= (a - (((a - x) * 0.794) * marge1)) and b >= (a - (((a - x) * 0.778) * marge2)) 
 b_c_bl = ch and c <= (b + (((a - b) * 0.886) * marge2)) and c >= (b + (((a - b) * 0.382) * marge1)) 
-b_d_bl = dl and d <= (a - (((a - b) * 1.618) * marge2)) and d >= (a - (((a - b) * 2.618) * marge2))
+b_d_bl = dl and d <= (a - (((a - b) * 1.618) * marge1)) and d >= (a - (((a - b) * 2.618) * marge2))
 
 //- Point B is at up to 78.6% retracement of XA.
 //- Point C can be at the 38.2%-88.6% retracement of AB.
@@ -460,7 +526,7 @@ plotchar(butterfly and show_anim ? plot_b_bl : na, char="🦋", location=locatio
 
 b_b_br = bh and b >= (a + (((x - a) * 0.794) * marge1)) and b <= (a + (((x - a) * 0.778) * marge2)) 
 b_c_br = cl and c >= (b - (((b - a) * 0.886) * marge2)) and c <= (b - (((b - a) * 0.382) * marge1)) 
-b_d_br = dh and d >= (a + (((b - a) * 1.618) * marge2)) and d <= (a + (((b - a) * 2.618) * marge2))
+b_d_br = dh and d >= (a + (((b - a) * 1.618) * marge1)) and d <= (a + (((b - a) * 2.618) * marge2))
 
 //- Point B is at up to 78.6% retracement of XA.
 //- Point C can be at the 38.2%-88.6% retracement of AB.
@@ -489,8 +555,8 @@ TP_4b = dl and b_bl ? a : dh and b_br ? a : na
 // Shark Bullish
 
 s_c_bl = ch and c <= (b + (((a - b) * 1.618) * marge2)) and c >= (b + (((a - b) * 1.13) * marge1)) 
-s_d_bl = dl and d <= (a - (((a - x) * 0.886) * marge2)) and d >= (a - (((a - x) * 1.13) * marge2))
-s_d_bl_ = dl and d <= (c - (((c - b) * 1.618) * marge2)) and d >= (c - (((c - b) * 2.24) * marge2))
+s_d_bl = dl and d <= (a - (((a - x) * 0.886) * marge1)) and d >= (a - (((a - x) * 1.13) * marge2))
+s_d_bl_ = dl and d <= (c - (((c - b) * 1.618) * marge1)) and d >= (c - (((c - b) * 2.24) * marge2))
 
 //- There’s no specific place for b (original shark b = 'a')
 //- Point c (original shark c = 'b') is at the 113%-161.8% extension of ab (original shark ab = 'xa')
@@ -504,8 +570,8 @@ plotchar(shark and show_anim ? plot_s_bl : na, char="🦈", location=location.bo
 // Shark Bearish
 
 s_c_br = cl and c >= (b - (((b - a) * 1.618) * marge2)) and c <= (b - (((b - a) * 1.13) * marge1)) 
-s_d_br = dh and d >= (a + (((x - a) * 0.886) * marge2)) and d <= (a + (((x - a) * 1.13) * marge2))
-s_d_br_ = dh and d >= (c + (((b - c) * 1.618) * marge2)) and d <= (c + (((b - c) * 2.24) * marge2))
+s_d_br = dh and d >= (a + (((x - a) * 0.886) * marge1)) and d <= (a + (((x - a) * 1.13) * marge2))
+s_d_br_ = dh and d >= (c + (((b - c) * 1.618) * marge1)) and d <= (c + (((b - c) * 2.24) * marge2))
 
 //- There’s no specific place for b (original shark b = 'a')
 //- Point c (original shark c = 'b') is at the 113%-161.8% extension of ab (original shark ab = 'xa')
@@ -524,6 +590,35 @@ ENTRYs = dl and s_bl ? valuewhen(e_0_886, e_0_886, 0) : dh and s_br ? valuewhen(
 TP_1s = dl and s_bl ? valuewhen(tp_0_5, tp_0_5, 0) : dh and s_br ? valuewhen(tp0_5, tp0_5, 0) : na
 TP_2s = dl and s_bl ? valuewhen(tp_0_618a, tp_0_618a, 0) : dh and s_br ? valuewhen(tp0_618a, tp0_618a, 0) : na
 SLs = dl and s_bl ? d : dh and s_br ? d : na
+
+// Nen Star Bullish
+
+ns_b_bl = bl and b <= (a - (((a - x) * 0.382) * marge1)) and b >= (a - (((a - x) * 0.618) * marge2)) 
+ns_c_bl = ch and c <= (b + (((a - b) * 2.14) * marge2)) and c >= (b + (((a - b) * 1.414) * marge1)) 
+ns_d_bl = dl and d <= (c - (((c - b) * 1.272) * marge1)) and d >= (c - (((c - b) * 2) * marge2))
+ns_D_bl = dl and d <= (a - (((a - x) * (1.272 * 0.99)) * marge1)) and d >= (a - (((a - x) * (1.272 * 1.01)) * marge2))  
+//ns_D_bl = dl and d <= (c - (((c - x) * (1.272 * 0.99)) * marge1)) and d >= (c - (((c - x) * (1.272 * 1.01)) * marge2))  
+ns_bl = ns_b_bl and ns_c_bl and ns_d_bl and ns_D_bl
+
+plot_ns_bl = ns_bl and not ns_bl[1] ? ns_bl : na
+plotchar(nenstar and show_anim ? plot_ns_bl : na, char="⭐️", location=location.bottom, color=color.lime, transp=0, size=size.tiny, title="Nen Star Bullish")
+
+// Nen Star Bearish
+ns_b_br = bh and b >= (a + (((x - a) * 0.382) * marge1)) and b <= (a + (((x - a) * 0.618) * marge2)) 
+ns_c_br = cl and c >= (b - (((b - a) * 2.14) * marge2)) and c <= (b - (((b - a) * 1.414) * marge1)) 
+ns_d_br = dh and d >= (c + (((b - c) * 1.272) * marge1)) and d <= (c + (((b - c) * 2) * marge2))
+ns_D_br = dh and d >= (a + (((x - a) * (1.272 * 0.99)) * marge1)) and d <= (a + (((x - a) * (1.272 * 1.01)) * marge2)) 
+//ns_D_br = dh and d >= (c + (((x - c) * (1.272 * 0.99)) * marge1)) and d <= (c + (((x - c) * (1.272 * 1.01)) * marge2)) 
+ns_br = ns_b_br and ns_c_br and ns_d_br and ns_D_br
+
+plot_ns_br = ns_br and not ns_br[1] ? ns_br : na
+plotchar(nenstar and show_anim ? plot_ns_br : na, char="⭐️", location=location.top, color=color.red, transp=0, size=size.tiny, title="Nen Star Bearish")
+
+ENTRYns = dl and ns_bl ? d : dh and ns_br ? d : na
+TP_1ns = dl and ns_bl ? b : dh and ns_br ? b : na
+TP_2ns = dl and ns_bl ? valuewhen(tp_0_382a, tp_0_382a, 0) : dh and ns_br ? valuewhen(tp0_382a, tp0_382a, 0) : na
+TP_3ns = dl and ns_bl ? valuewhen(tp_0_5, tp_0_5, 0) : dh and ns_br ? valuewhen(tp0_5, tp0_5, 0) : na
+TP_4ns = dl and ns_bl ? a : dh and ns_br ? a : na
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -554,6 +649,7 @@ textred = color.new(color.red, 0)
 lev = input(75, title="Distance TP label")
 lw = input(2, minval=0, maxval=10, title="TP linewidth")
 lwd = input(7, minval=0, maxval=30, title="Drawings linewidth")
+lwd1 = input(3, minval=0, maxval=30, title="Linewidth [Connections]")
 
 //phigh = pivothigh(ABCD_br ? zigzag : na, 0, 0)
 //plow = pivotlow(ABCD_bl ? zigzag : na, 0, 0)
@@ -563,14 +659,20 @@ phighbt = pivothigh(bt_br ? zigzag : na, 0, 0)
 plowbt = pivotlow(bt_bl ? zigzag : na, 0, 0)
 phighbtA = pivothigh(bt_brA ? zigzag : na, 0, 0)
 plowbtA = pivotlow(bt_blA ? zigzag : na, 0, 0)
+phighmb = pivothigh(mb_br ? zigzag : na, 0, 0)
+plowmb = pivotlow(mb_bl ? zigzag : na, 0, 0)
 //phighg = pivothigh(g_br ? zigzag : na, 0, 0)
 //plowg = pivotlow(g_bl ? zigzag : na, 0, 0)
 phighb = pivothigh(b_br ? zigzag : na, 0, 0)
 plowb = pivotlow(b_bl ? zigzag : na, 0, 0)
 phighs = pivothigh(s_br ? zigzag : na, 0, 0)
 plows = pivotlow(s_bl ? zigzag : na, 0, 0)
+phighns = pivothigh(ns_br ? zigzag : na, 0, 0)
+plowns = pivotlow(ns_bl ? zigzag : na, 0, 0)
 //val0_382 = valuewhen(tp0_382, tp0_382, 0)                                       
-//val_0_382 = valuewhen(tp_0_382, tp_0_382, 0)                                    
+//val_0_382 = valuewhen(tp_0_382, tp_0_382, 0)  
+val_0_382a = valuewhen(tp_0_382a, tp_0_382a, 0) 
+val0_382a = valuewhen(tp0_382a, tp0_382a, 0) 
 val0_618 = valuewhen(tp0_618, tp0_618, 0)                                       
 val0_618a = valuewhen(tp0_618a, tp0_618a, 0)                                    
 val_0_618 = valuewhen(tp_0_618, tp_0_618, 0)                                    
@@ -828,6 +930,60 @@ if plowbtA
     line.set_width(line10, lwd)
     line.set_width(line11, lwd)
 
+// BAT MAX Bearish    
+if phighmb
+    label1 = batmax and show_L ? label.new(bar_index[1], HH + HH/lev, text="BAT MAX" + "\nENTRY " + tostring(ENTRYmb) + "\nTP1 " + tostring(TP_1mb) + "\nTP2 " + tostring(TP_2mb) + "\nTP3 " + tostring(TP_3mb) + "\nTP4 " + tostring(TP_4mb), textcolor=textred, style=label.style_labeldown, color=label_maroon, size=SIZE) : na
+    line1 = batmax and show_TP ? line.new(bar_index[2], val0_618a, bar_index, val0_618a, xloc = xloc.bar_index, style=line.style_solid, extend=extend.none, color=line_lime) : na
+    line2 = batmax and show_TP ? line.new(bar_index[2], val0_886, bar_index, val0_886, xloc = xloc.bar_index, style=line.style_solid, extend=extend.none, color=line_white) : na
+    line3 = batmax and show_TP ? line.new(bar_index[2], b, bar_index, b, xloc = xloc.bar_index, style=line.style_solid, extend=extend.none, color=line_yellow) : na
+    line4 = batmax and show_TP ? line.new(bar_index[2], c, bar_index, c, xloc = xloc.bar_index, style=line.style_solid, extend=extend.none, color=line_orange) : na
+    line5 = batmax and show_E ? line.new(bar_index[1], d, bar_index, d, xloc = xloc.bar_index, style=line.style_solid, extend=extend.none, color=line_white) : na
+    line6 = batmax and show_D ? line.new(bar_index[BIxh], x, bar_index[BIal], a, xloc = xloc.bar_index, style=line.style_solid, extend=extend.none, color=line_red1) : na
+    line7 = batmax and show_D ? line.new(bar_index[BIxh], x, bar_index[BIbh], b, xloc = xloc.bar_index, style=line.style_solid, extend=extend.none, color=line_red1) : na
+    line8 = batmax and show_D ? line.new(bar_index[BIal], a, bar_index[BIbh], b, xloc = xloc.bar_index, style=line.style_solid, extend=extend.none, color=line_red1) : na
+    line9 = batmax and show_D ? line.new(bar_index[BIbh], b, bar_index[BIcl], c, xloc = xloc.bar_index, style=line.style_solid, extend=extend.none, color=line_red1) : na
+    line10 = batmax and show_D ? line.new(bar_index[BIbh], b, bar_index[1], d, xloc = xloc.bar_index, style=line.style_solid, extend=extend.none, color=line_red1) : na
+    line11 = batmax and show_D ? line.new(bar_index[BIcl], c, bar_index[1], d, xloc = xloc.bar_index, style=line.style_solid, extend=extend.none, color=line_red1) : na
+    line.set_style(line5, line.style_arrow_left)
+    line.set_width(line1, lw)
+    line.set_width(line2, lw)
+    line.set_width(line3, lw)
+    line.set_width(line4, lw)
+    line.set_width(line5, lw)
+    line.set_width(line6, lwd)
+    line.set_width(line7, lwd)
+    line.set_width(line8, lwd)
+    line.set_width(line9, lwd)
+    line.set_width(line10, lwd)
+    line.set_width(line11, lwd)
+
+// BAT MAX Bullish
+if plowmb
+    label1 = batmax and show_L ? label.new(bar_index[1], LL - LL/lev, text="BAT MAX" + "\nENTRY " + tostring(ENTRYmb) + "\nTP1 " + tostring(TP_1mb) + "\nTP2 " + tostring(TP_2mb) + "\nTP3 " + tostring(TP_3mb) + "\nTP4 " + tostring(TP_4mb), textcolor=textlime, style=label.style_labelup, color=label_maroon, size=SIZE) : na
+    line1 = batmax and show_TP ? line.new(bar_index[2], val_0_618a, bar_index, val_0_618a, xloc = xloc.bar_index, style=line.style_solid, extend=extend.none, color=line_lime) : na
+    line2 = batmax and show_TP ? line.new(bar_index[2], val_0_886 , bar_index, val_0_886 , xloc = xloc.bar_index, style=line.style_solid, extend=extend.none, color=line_white) : na
+    line3 = batmax and show_TP ? line.new(bar_index[2], b, bar_index, b, xloc = xloc.bar_index, style=line.style_solid, extend=extend.none, color=line_yellow) : na
+    line4 = batmax and show_TP ? line.new(bar_index[2], c, bar_index, c, xloc = xloc.bar_index, style=line.style_solid, extend=extend.none, color=line_orange) : na
+    line5 = batmax and show_E ? line.new(bar_index[1], d, bar_index, d, xloc = xloc.bar_index, style=line.style_solid, extend=extend.none, color=line_white) : na
+    line6 = batmax and show_D ? line.new(bar_index[BIxl], x, bar_index[BIah], a, xloc = xloc.bar_index, style=line.style_solid, extend=extend.none, color=line_lime1) : na
+    line7 = batmax and show_D ? line.new(bar_index[BIxl], x, bar_index[BIbl], b, xloc = xloc.bar_index, style=line.style_solid, extend=extend.none, color=line_lime1) : na
+    line8 = batmax and show_D ? line.new(bar_index[BIah], a, bar_index[BIbl], b, xloc = xloc.bar_index, style=line.style_solid, extend=extend.none, color=line_lime1) : na
+    line9 = batmax and show_D ? line.new(bar_index[BIbl], b, bar_index[BIch], c, xloc = xloc.bar_index, style=line.style_solid, extend=extend.none, color=line_lime1) : na
+    line10 = batmax and show_D ? line.new(bar_index[BIbl], b, bar_index[1], d, xloc = xloc.bar_index, style=line.style_solid, extend=extend.none, color=line_lime1) : na
+    line11 = batmax and show_D ? line.new(bar_index[BIch], c, bar_index[1], d, xloc = xloc.bar_index, style=line.style_solid, extend=extend.none, color=line_lime1) : na
+    line.set_style(line5, line.style_arrow_left)
+    line.set_width(line1, lw)
+    line.set_width(line2, lw)
+    line.set_width(line3, lw)
+    line.set_width(line4, lw)
+    line.set_width(line5, lw)
+    line.set_width(line6, lwd)
+    line.set_width(line7, lwd)
+    line.set_width(line8, lwd)
+    line.set_width(line9, lwd)
+    line.set_width(line10, lwd)
+    line.set_width(line11, lwd)
+
 // Gartley Bearish    
 //if phighg
 //    label1 = gartley and show_L ? label.new(bar_index[1], HH + HH/lev, text="Gartley" + "\nENTRY " + tostring(ENTRYg) + "\nTP1 " + tostring(TP_1g) + "\nTP2 " + tostring(TP_2g) + "\nSL " + tostring(SL_1g), textcolor=textred, style=label.style_labeldown, color=label_navy, size=SIZE) : na
@@ -986,6 +1142,60 @@ if plows
     line.set_width(line9, lwd)
     line.set_width(line10, lwd)
 
+// Nen Star Bearish
+if phighns
+    label1 = nenstar and show_L ? label.new(bar_index[1], HH + HH/lev, text="Nen Star" + "\nENTRY " + tostring(ENTRYns) + "\nTP1 " + tostring(TP_1ns) + "\nTP2 " + tostring(TP_2ns) + "\nTP3 " + tostring(TP_3ns)+ "\nTP4 " + tostring(TP_4ns), textcolor=textred, style=label.style_labeldown, color=label_navy, size=SIZE) : na
+    line1 = nenstar and show_TP ? line.new(bar_index[2], b, bar_index, b, xloc = xloc.bar_index, style=line.style_solid, extend=extend.none, color=line_lime) : na
+    line2 = nenstar and show_TP ? line.new(bar_index[2], val0_382a, bar_index, val0_382a, xloc = xloc.bar_index, style=line.style_solid, extend=extend.none, color=line_white) : na
+    line3 = nenstar and show_TP ? line.new(bar_index[2], val0_5, bar_index, val0_5, xloc = xloc.bar_index, style=line.style_solid, extend=extend.none, color=line_yellow) : na
+    line4 = nenstar and show_TP ? line.new(bar_index[2], a, bar_index, a, xloc = xloc.bar_index, style=line.style_solid, extend=extend.none, color=line_orange) : na
+    line5 = nenstar and show_E ? line.new(bar_index[1], d, bar_index, d, xloc = xloc.bar_index, style=line.style_solid, extend=extend.none, color=line_white) : na
+    line6 = nenstar and show_D ? line.new(bar_index[BIxh], x, bar_index[BIal], a, xloc = xloc.bar_index, style=line.style_solid, extend=extend.none, color=line_red1) : na
+    line7 = nenstar and show_D ? line.new(bar_index[BIxh], x, bar_index[BIbh], b, xloc = xloc.bar_index, style=_LINE, extend=extend.none, color=line_red1) : na
+    line8 = nenstar and show_D ? line.new(bar_index[BIal], a, bar_index[BIbh], b, xloc = xloc.bar_index, style=line.style_solid, extend=extend.none, color=line_red1) : na
+    line9 = nenstar and show_D ? line.new(bar_index[BIbh], b, bar_index[BIcl], c, xloc = xloc.bar_index, style=line.style_solid, extend=extend.none, color=line_red1) : na
+    line10 = nenstar and show_D ? line.new(bar_index[BIbh], b, bar_index[1], d, xloc = xloc.bar_index, style=_LINE, extend=extend.none, color=line_red1) : na
+    line11 = nenstar and show_D ? line.new(bar_index[BIcl], c, bar_index[1], d, xloc = xloc.bar_index, style=line.style_solid, extend=extend.none, color=line_red1) : na
+    line.set_style(line5, line.style_arrow_left)
+    line.set_width(line1, lw)
+    line.set_width(line2, lw)
+    line.set_width(line3, lw)
+    line.set_width(line4, lw)
+    line.set_width(line5, lw)
+    line.set_width(line6, lwd)
+    line.set_width(line7, lwd1)
+    line.set_width(line8, lwd)
+    line.set_width(line9, lwd)
+    line.set_width(line10, lwd1)
+    line.set_width(line11, lwd)
+   
+// Nen Star Bullish
+if plowns
+    label1 = nenstar and show_L ? label.new(bar_index[1], LL - LL/lev, text="Nen Star" + "\nENTRY " + tostring(ENTRYns) + "\nTP1 " + tostring(TP_1ns) + "\nTP2 " + tostring(TP_2ns) + "\nTP3 " + tostring(TP_3ns)+ "\nTP4 " + tostring(TP_4ns), textcolor=textlime, style=label.style_labelup, color=label_navy, size=SIZE) : na
+    line1 = nenstar and show_TP ? line.new(bar_index[2], b, bar_index, b, xloc = xloc.bar_index, style=line.style_solid, extend=extend.none, color=line_lime) : na
+    line2 = nenstar and show_TP ? line.new(bar_index[2], val_0_382a, bar_index, val_0_382a, xloc = xloc.bar_index, style=line.style_solid, extend=extend.none, color=line_white) : na
+    line3 = nenstar and show_TP ? line.new(bar_index[2], val_0_5, bar_index, val_0_5, xloc = xloc.bar_index, style=line.style_solid, extend=extend.none, color=line_yellow) : na
+    line4 = nenstar and show_TP ? line.new(bar_index[2], a, bar_index, a, xloc = xloc.bar_index, style=line.style_solid, extend=extend.none, color=line_orange) : na
+    line5 = nenstar and show_E ? line.new(bar_index[1], d, bar_index, d, xloc = xloc.bar_index, style=line.style_solid, extend=extend.none, color=line_white) : na
+    line6 = nenstar and show_D ? line.new(bar_index[BIxl], x, bar_index[BIah], a, xloc = xloc.bar_index, style=line.style_solid, extend=extend.none, color=line_lime1) : na
+    line7 = nenstar and show_D ? line.new(bar_index[BIxl], x, bar_index[BIbl], b, xloc = xloc.bar_index, style=_LINE, extend=extend.none, color=line_lime1) : na
+    line8 = nenstar and show_D ? line.new(bar_index[BIah], a, bar_index[BIbl], b, xloc = xloc.bar_index, style=line.style_solid, extend=extend.none, color=line_lime1) : na
+    line9 = nenstar and show_D ? line.new(bar_index[BIbl], b, bar_index[BIch], c, xloc = xloc.bar_index, style=line.style_solid, extend=extend.none, color=line_lime1) : na
+    line10 = nenstar and show_D ? line.new(bar_index[BIbl], b, bar_index[1], d, xloc = xloc.bar_index, style=_LINE, extend=extend.none, color=line_lime1) : na
+    line11 = nenstar and show_D ? line.new(bar_index[BIch], c, bar_index[1], d, xloc = xloc.bar_index, style=line.style_solid, extend=extend.none, color=line_lime1) : na
+    line.set_style(line5, line.style_arrow_left)
+    line.set_width(line1, lw)
+    line.set_width(line2, lw)
+    line.set_width(line3, lw)
+    line.set_width(line4, lw)
+    line.set_width(line5, lw)
+    line.set_width(line6, lwd)
+    line.set_width(line7, lwd1)
+    line.set_width(line8, lwd)
+    line.set_width(line9, lwd)
+    line.set_width(line10, lwd1)
+    line.set_width(line11, lwd)
+   
 // Alerts
 
 //ABCD_bl_alert = ABCD_bl and not ABCD_bl[1] ? true : na
