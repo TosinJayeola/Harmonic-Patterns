@@ -2,7 +2,7 @@
 // This source code is subject to the terms of the Mozilla Public License 2.0 at https://mozilla.org/MPL/2.0/
 // © fikira
 // This source code is subject to the terms of the Creative Commons Zero v1.0 Universal license
-// https://github.com/fikira12/Fibonacci-Retracement-Pivots.git
+// https://github.com/fikira12/Harmonic-Patterns
 // Copyright (c) 2019 @fikira
 
 study("[fikira] Harmonic Patterns 1", shorttitle="HaPat 1", overlay=true)
@@ -57,17 +57,22 @@ css = oc == 1 ? color.red : color.blue
 pL = zigzag and oc == 1
 pH = zigzag and oc == -1
 
+
 d = valuewhen(not na(zigzag), zigzag, 0)                                        // when there is a new "Highest" or "Lowest" point > use present value
 //plot(d, color=color.red, offset=-1)                                           // Shark: 'c' = b
+
 
 c = valuewhen(not na(zigzag), zigzag, 1)                                        // when there is a new "Highest" or "Lowest" point > use 1 point back as value
 //plot(c, color=color.orange, offset=-1)                                        // Shark: 'b' = c 
 
+
 b = valuewhen(not na(zigzag), zigzag, 2)                                        // when there is a new "Highest" or "Lowest" point > use 2 points back as value
 //plot(b, color=color.yellow, offset=-1)                                        // Shark: 'a' = b 
 
+
 a = valuewhen(not na(zigzag), zigzag, 3)                                        // when there is a new "Highest" or "Lowest" point > use 3 points back as value
 //plot(a, color=color.lime, offset=-1)                                          // Shark: 'x' = a 
+
 
 x = valuewhen(not na(zigzag), zigzag, 4)                                        // when there is a new "Highest" or "Lowest" point > use 4 points back as value
 //plot(x, color=color.aqua, offset=-1)                                          // Shark: '0' = x    
@@ -152,6 +157,7 @@ show_SL = input(true, title="Show SL Lines")
 _tp = input(false, title="-<><><><><><><><[Take Profit]><><><><><><><>-")
 show_TP = input(true, title="Show TP Lines")
 
+
 TP1 = input(title="TP level 'ABCD', 'Cypher'", defval="0.382", options=["0.236", "0.382", "0.5", "0.618", "0.786", "1", "1.272", "1.618"])  // numbers = minutes, D = Day, W = Week, M = Month
 TP2 = input(title="TP level 'ABCD' 'Gartley'", defval="0.618", options=["0.236", "0.382", "0.5", "0.618", "0.786", "1", "1.272", "1.618"])  // numbers = minutes, D = Day, W = Week, M = Month
 TP3 = input(title="TP level 🦀🦇🦋", defval="1.272", options=["0.236", "0.382", "0.5", "0.618", "0.786", "1", "1.272", "1.618"])  // numbers = minutes, D = Day, W = Week, M = Month
@@ -233,7 +239,6 @@ else
                             if TP3 == "1.618"
                                 _1_272 := 1.618
 
-
 tp_0_382 = d + ((a - d) * _0_382)   // tp_1 = tp_0_382
 tp_0_382a = d + ((c - d) * 0.382) 
 tp_0_5 = d + ((c - d) * 0.5)        // tp_1s = tp_0_5
@@ -253,6 +258,29 @@ tp1_272 = d - ((d - c) * _1_272)    // tp2a = tp1_272
 e_0_886 = a - ((a - x) * 0.886)     // e_1s = e_0_886
 e0_886 = a + ((x - a) * 0.886)      // e1s = e0_886
 
+// from http://chartreaderpro.com/harmonic-pattern-ratios/ 
+// X-A -> B: minXB & maxXB
+// A-B -> C: minAC & maxAC
+// B-C -> D: minBD & maxBD
+// X -> D: minXD(-1%) & maxXD(+1%)
+// ? Bullish
+// ?_b_bl = bl and b <= (a - (((a - x) * minXB) * marge1)) and b >= (a - (((a - x) * maxXB) * marge2)) 
+// ?_c_bl = ch and c <= (b + (((a - b) * maxAC) * marge2)) and c >= (b + (((a - b) * minAC) * marge1)) 
+// ?_d_bl = dl and d <= (c - (((c - b) * minBD) * marge1)) and d >= (c - (((c - b) * maxBD) * marge2))
+// ?_D_bl = dl and d <= (a - (((a - x) * (minXD * 0.99)) * marge1)) and d >= (a - (((a - x) * (maxXD * 1.01)) * marge2)) 
+// OR ?:
+// ?_D_bl = dl and d <= (c - (((c - x) * (minXD * 0.99)) * marge1)) and d >= (c - (((c - x) * (maxXD * 1.01)) * marge2)) 
+
+// ?_bl = ?_b_bl and ?_c_bl and ?_d_bl and ?_D_bl
+// ? Bearish
+// ?_b_br = bh and b >= (a + (((x - a) * minXB) * marge1)) and b <= (a + (((x - a) * maxXB) * marge2)) 
+// ?_c_br = cl and c >= (b - (((b - a) * maxAC) * marge2)) and c <= (b - (((b - a) * minAC) * marge1)) 
+// ?_d_br = dh and d >= (c + (((b - c) * minBD) * marge1)) and d <= (c + (((b - c) * maxBD) * marge2))
+// ?_D_br = dh and d >= (a + (((x - a) * (minXD * 0.99)) * marge1)) and d <= (a + (((x - a) * (maxXD * 1.01)) * marge2)) 
+// OR:
+// ?_D_br = dh and d >= (c + (((x - c) * (minXD * 0.99)) * marge1)) and d <= (c + (((x - c) * (maxXD * 1.01)) * marge2)) 
+
+// ?_br = ?_b_br and ?_c_br and ?_d_br and ?_D_br
 
 // 'ABCD'
 
@@ -267,6 +295,7 @@ ABCD_bl = c_bl and d_bl
 c_br = cl and c <= (b - (((b - a) * 0.618) * marge1)) and c >= (b - (((b - a) * 0.786) * marge2)) 
 d_br = dh and d <= (c + (((b - c) * 1.618) * marge2)) and d >= (c + (((b - c) * 1.272) * marge1)) 
 ABCD_br = c_br and d_br
+
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // When the market arrives at a point, where D may be situated, don’t rush into a trade.                                        //
@@ -287,7 +316,7 @@ TP_3 = abcd and dl and ABCD_bl ? a : abcd and dh and ABCD_br ? a : na
 
 g_b_bl = bl and b <= (a - (((a - x) * 0.624) * marge1)) and b >= (a - (((a - x) * 0.612) * marge2)) 
 g_c_bl = ch and c <= (b + (((a - b) * 0.886) * marge2)) and c >= (b + (((a - b) * 0.382) * marge1)) 
-g_d_bl = dl and d <= (a - (((a - b) * 1.27) * marge2)) and d >= (a - (((a - b) * 1.618) * marge2))
+g_d_bl = dl and d <= (a - (((a - b) * 1.27) * marge1)) and d >= (a - (((a - b) * 1.618) * marge2))
 
 //Point B is at the 61.8% retracement of XA. This is the most important condition.
 //Point C can be at the 38.2%-88.6% retracement of AB.
@@ -299,7 +328,7 @@ g_bl = g_b_bl and g_c_bl and g_d_bl
 
 g_b_br = bh and b >= (a + (((x - a) * 0.624) * marge1)) and b <= (a + (((x - a) * 0.612) * marge2)) 
 g_c_br = cl and c >= (b - (((b - a) * 0.886) * marge2)) and c <= (b - (((b - a) * 0.382) * marge1)) 
-g_d_br = dh and d >= (a + (((b - a) * 1.27) * marge2)) and d <= (a + (((b - a) * 1.618) * marge2))
+g_d_br = dh and d >= (a + (((b - a) * 1.27) * marge1)) and d <= (a + (((b - a) * 1.618) * marge2))
 
 //Point B is at the 61.8% retracement of XA. This is the most important condition.
 //Point C can be at the 38.2%-88.6% retracement of AB.
@@ -328,7 +357,7 @@ SL_1g = dl and g_bl ? x - (x / 100) : dh and g_br ? x + (x / 100) : na
 
 cy_b_bl = bl and b <= (a - (((a - x) * 0.382) * marge1)) and b >= (a - (((a - x) * 0.618) * marge2)) 
 cy_c_bl = ch and c <= (b + (((a - b) * 1.414) * marge2)) and c >= (b + (((a - b) * 1.13) * marge1)) 
-cy_d_bl = dl and d <= (c - (((c - b) * 1.272) * marge2)) and d >= (c - (((c - b) * 2.00) * marge2))
+cy_d_bl = dl and d <= (c - (((c - b) * 1.272) * marge1)) and d >= (c - (((c - b) * 2.00) * marge2))
 cy_d_bl2 = dl and d <= (c - (((c - x) * 0.778) * marge1)) and d >= (c - (((c - x) * 0.794) * marge2))  
 
 cy_bl = cy_b_bl and cy_c_bl and cy_d_bl and cy_d_bl2
@@ -337,7 +366,7 @@ cy_bl = cy_b_bl and cy_c_bl and cy_d_bl and cy_d_bl2
 
 cy_b_br = bh and b >= (a + (((x - a) * 0.382) * marge1)) and b <= (a + (((x - a) * 0.618) * marge2)) 
 cy_c_br = cl and c >= (b - (((b - a) * 1.414) * marge2)) and c <= (b - (((b - a) * 1.13) * marge1)) 
-cy_d_br = dh and d >= (c + (((b - c) * 1.272) * marge2)) and d <= (c + (((b - c) * 2.00) * marge2))
+cy_d_br = dh and d >= (c + (((b - c) * 1.272) * marge1)) and d <= (c + (((b - c) * 2.00) * marge2))
 cy_d_br2 = dh and d >= (c + (((x - c) * 0.778) * marge1)) and d <= (c + (((x - c) * 0.794) * marge2))  
 
 cy_br = cy_b_br and cy_c_br and cy_d_br and cy_d_br2
@@ -362,7 +391,7 @@ TP_4cy = dl and cy_bl ? a : dh and cy_br ? a : na
 
 _5_b_bl = bl and b <= (a - (((a - x) * 1.13) * marge1)) and b >= (a - (((a - x) * 1.618) * marge2)) 
 _5_c_bl = ch and c <= (b + (((a - b) * 2.24) * marge2)) and c >= (b + (((a - b) * 1.618) * marge1)) 
-_5_d_bl = dl and d <= (c - (((c - b) * 0.495) * marge2)) and d >= (c - (((c - b) * 0.505) * marge2))
+_5_d_bl = dl and d <= (c - (((c - b) * 0.495) * marge1)) and d >= (c - (((c - b) * 0.505) * marge2))
 
 _5_bl = _5_b_bl and _5_c_bl and _5_d_bl
 
@@ -370,7 +399,7 @@ _5_bl = _5_b_bl and _5_c_bl and _5_d_bl
 
 _5_b_br = bh and b >= (a + (((x - a) * 1.13) * marge1)) and b <= (a + (((x - a) * 1.618) * marge2)) 
 _5_c_br = cl and c >= (b - (((b - a) * 2.24) * marge2)) and c <= (b - (((b - a) * 1.618) * marge1)) 
-_5_d_br = dh and d >= (c + (((b - c) * 0.495) * marge2)) and d <= (c + (((b - c) * 0.505) * marge2))
+_5_d_br = dh and d >= (c + (((b - c) * 0.495) * marge1)) and d <= (c + (((b - c) * 0.505) * marge2))
 
 _5_br = _5_b_br and _5_c_br and _5_d_br
 
@@ -380,6 +409,7 @@ ENTRY5 = dl and _5_bl ? d : dh and _5_br ? d : na
 TP_1_5 = dl and _5_bl ? valuewhen(tp_0_5, tp_0_5, 0) : dh and _5_br ? valuewhen(tp0_5, tp0_5, 0) : na
 TP_2_5 = dl and _5_bl ? valuewhen(tp_0_886, tp_0_886, 0) : dh and _5_br ? valuewhen(tp0_886, tp0_886, 0) : na
 TP_3_5 = dl and _5_bl ? c : dh and _5_br ? c : na
+
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -430,6 +460,7 @@ eval0_886 = valuewhen(e0_886, e0_886, 0)
 eval_0_886 =  valuewhen(e_0_886, e_0_886, 0)
 val0_5 = valuewhen(tp0_5, tp0_5, 0)
 val_0_5 = valuewhen(tp_0_5, tp_0_5, 0)
+
 
 // Drawings Bullish
 
@@ -483,9 +514,17 @@ for i = 0 to _to
         break    
     BIxh := BIxh + 1
 
+AB_CDbl = (bar_index[BIch] - bar_index[BIbl]) - (bar_index[BIah] - bar_index[BIxl]) ==  0 ? true : false
+AB_CDbr = (bar_index[BIcl] - bar_index[BIbh]) - (bar_index[BIal] - bar_index[BIxh]) == 0 ? true : false
+
 // ABCD Bearish
 if phigh
-    label1 = abcd and show_L ? label.new(bar_index[1], HH + HH/lev, text="ABCD" + "\nTP1 " + tostring(TP_1) + "\nTP2 " + tostring(TP_2) + "\nTP3 " + tostring(TP_3), textcolor=textred, style=label.style_labeldown, color=label_black, size=SIZE) : na
+    label1 = abcd and show_L ? label.new(bar_index[1], HH + HH/lev, text= AB_CDbr ? 
+     "AB=CD" + "\n" + "\nABCD" + "\nTP1 " + tostring(TP_1) + "\nTP2 " + tostring(TP_2) + "\nTP3 " + tostring(TP_3) :
+     "ABCD" + "\nTP1 " + tostring(TP_1) + "\nTP2 " + tostring(TP_2) + "\nTP3 " + tostring(TP_3),
+     textcolor=textred, style=label.style_labeldown, color=label_black, size=SIZE) : na
+    label2 = abcd and show_L and AB_CDbr ? label.new(bar_index[BIal], a, text="AB=CD", 
+     textcolor=textyellow, style=label.style_labelup, color=label_black, size=SIZE) : na
     line1 = abcd and show_TP ? line.new(bar_index[2], val0_382, bar_index, val0_382, xloc = xloc.bar_index, style=line.style_solid, extend=extend.none, color=line_lime) : na
     line2 = abcd and show_TP ? line.new(bar_index[2], val0_618, bar_index, val0_618, xloc = xloc.bar_index, style=line.style_solid, extend=extend.none, color=line_white) : na
     line3 = abcd and show_TP ? line.new(bar_index[2], a, bar_index, a, xloc = xloc.bar_index, style=line.style_solid, extend=extend.none, color=line_yellow) : na
@@ -505,7 +544,12 @@ if phigh
     
 // ABCD Bullish  
 if plow
-    label1 = abcd and show_L ? label.new(bar_index[1], LL - LL/lev, text="ABCD" + "\nTP1 " + tostring(TP_1) + "\nTP2 " + tostring(TP_2) + "\nTP3 " + tostring(TP_3), textcolor=textlime, style=label.style_labelup, color=label_black, size=SIZE) : na
+    label1 = abcd and show_L ? label.new(bar_index[1], LL - LL/lev, text= AB_CDbl ?
+     "AB=CD" + "\n" + "\nABCD" + "\nTP1 " + tostring(TP_1) + "\nTP2 " + tostring(TP_2) + "\nTP3 " + tostring(TP_3) :
+     "ABCD" + "\nTP1 " + tostring(TP_1) + "\nTP2 " + tostring(TP_2) + "\nTP3 " + tostring(TP_3), 
+     textcolor=textlime, style=label.style_labelup, color=label_black, size=SIZE) : na
+    label2 = abcd and show_L and AB_CDbl ? label.new(bar_index[BIah], a, text="AB=CD", 
+     textcolor=textyellow, style=label.style_labeldown, color=label_black, size=SIZE) : na
     line1 = abcd and show_TP ? line.new(bar_index[2], val_0_382, bar_index, val_0_382, xloc = xloc.bar_index, style=line.style_solid, extend=extend.none, color=line_lime) : na
     line2 = abcd and show_TP ? line.new(bar_index[2], val_0_618, bar_index, val_0_618, xloc = xloc.bar_index, style=line.style_solid, extend=extend.none, color=line_white) : na
     line3 = abcd and show_TP ? line.new(bar_index[2], a, bar_index, a, xloc = xloc.bar_index, style=line.style_solid, extend=extend.none, color=line_yellow) : na
@@ -702,6 +746,7 @@ alertcondition(_5_bl_alert, title='[5-0] bullish Alert', message='[5-0] bullish 
 
 _5_br_alert = _5_br and not _5_br[1] ? true : na
 alertcondition(_5_br_alert, title='[5-0] bearish Alert', message='[5-0] bearish Alert')
+
 
 something = (g_bl and not g_bl[1]) or (g_br and not g_br[1]) or (ABCD_bl and not ABCD_bl[1]) or (ABCD_br and not ABCD_br[1]) or (_5_bl and not _5_bl[1]) or (_5_br and not _5_br[1]) ? true : na
 alertcondition(something, title='"Something Alert"', message='"Something Alert" > Check chart!')
